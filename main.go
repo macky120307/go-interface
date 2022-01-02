@@ -2,23 +2,42 @@ package main
 
 import "fmt"
 
-type Func func() string
-func (f Func) String() string { return f() }
-func main() {
-	var s fmt.Stringer = Func(func() string {
-		return "hi"
-	})
-	fmt.Println(s)
+type Stringer interface {
+	String() string
+}
 
-	var i interface{}
-	i = nil
-	switch v := i.(type) {
-	case int:
-		fmt.Println(v*2)
-	case string:
-		fmt.Println(v+"hoge")
-	default:
-		fmt.Println("default")
+type I int
+
+func (n I) String() string {
+	return "I"
+}
+
+type B bool
+
+func (b B) String() string {
+	return "B"
+}
+
+type S string
+
+func (s S) String() string {
+	return "S"
+}
+
+func F(s Stringer) {
+	switch v := s.(type) {
+	case I:
+		fmt.Println(int(v), "I")
+	case B:
+		fmt.Println(bool(v), "B")
+	case S:
+		fmt.Println(string(v), "S")
 	}
 }
 
+func main() {
+	var n I = I(100)
+	F(n)
+	F(B(true))
+	F(S("hoge"))
+}
